@@ -1,43 +1,55 @@
-import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
+import { Tabs } from 'expo-router';
+import { Icon } from '@ui-kitten/components';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+// Icon components for tab bar
+const HomeIcon = (props) => <Icon {...props} name="home-outline" />;
+const CalendarIcon = (props) => <Icon {...props} name="calendar-outline" />;
+const PersonIcon = (props) => <Icon {...props} name="person-outline" />;
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
+  
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        tabBarActiveTintColor: '#007AFF', // iOS blue
+        tabBarInactiveTintColor: '#8E8E93', // iOS gray
+        tabBarStyle: {
+          paddingBottom: insets.bottom,
+          height: 56 + insets.bottom,
+          backgroundColor: '#FFFFFF',
+          borderTopColor: '#E5E5EA', // iOS separator color
+        },
+        headerShadowVisible: false,
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color, size }) => <HomeIcon fill={color} width={size} height={size} />,
+          headerTitle: 'SportSync',
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="activities"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Activities',
+          tabBarIcon: ({ color, size }) => <CalendarIcon fill={color} width={size} height={size} />,
+          headerTitle: 'Activities',
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => <PersonIcon fill={color} width={size} height={size} />,
+          headerTitle: 'Profile',
         }}
       />
     </Tabs>
