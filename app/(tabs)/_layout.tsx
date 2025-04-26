@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // Icon components for tab bar
 const HomeIcon = (props) => <Icon {...props} name="home-outline" />;
 const CalendarIcon = (props) => <Icon {...props} name="calendar-outline" />;
+const PlusIcon = (props) => <Icon {...props} name="plus-outline" />;
 const PersonIcon = (props) => <Icon {...props} name="person-outline" />;
 
 export default function TabsLayout() {
@@ -42,6 +43,14 @@ export default function TabsLayout() {
           title: 'Activities',
           tabBarIcon: ({ color, size }) => <CalendarIcon fill={color} width={size} height={size} />,
           headerTitle: 'Activities',
+        }}
+      />
+      <Tabs.Screen
+        name="create-activity"
+        options={{
+          title: 'Create',
+          tabBarIcon: ({ color, size }) => <PlusIcon fill={color} width={size} height={size} />,
+          headerTitle: 'Create Activity',
         }}
       />
       <Tabs.Screen

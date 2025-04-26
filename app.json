@@ -16,7 +16,12 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.sportsync"
+      "package": "com.anonymous.sportsync",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCnYRnFuBWvV58JqALIrWsw-RRl4CAnxS0"
+        }
+      }
     },
     "web": {
       "bundler": "metro",

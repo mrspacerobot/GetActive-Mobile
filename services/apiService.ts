@@ -3,16 +3,21 @@ import { Activity } from '../types/activity.types';
 // Replace with your actual API base URL
 const API_BASE_URL = 'https://your-api-endpoint.com/api';
 
-interface RequestOptions extends RequestInit {
-  headers?: Record<string, string>;
+// Activity data type for creating a new activity
+export interface CreateActivityData {
+  title: string;
+  description?: string;
+  activityType: string;
+  startTime: string;
+  endTime: string;
+  maxParticipants: number;
+  latitude: number;
+  longitude: number;
 }
 
-interface SearchParams {
-  q?: string;
-  category?: string;
-  startDate?: string;
-  endDate?: string;
-  [key: string]: string | undefined;
+// Configuration for API requests
+interface RequestOptions extends RequestInit {
+  headers?: Record<string, string>;
 }
 
 /**
@@ -62,26 +67,21 @@ const request = async <T>(endpoint: string, options: RequestOptions = {}): Promi
 };
 
 /**
- * API methods for activities
+ * Service for managing activities
  */
-export const ActivitiesAPI = {
+export const ActivityService = {
   // Get all activities
-  getAll: (params: Record<string, string> = {}): Promise<Activity[]> => {
-    // Convert params object to URL query string
-    const queryString = Object.keys(params)
-      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-      .join('&');
-    
-    return request<Activity[]>(`/activities${queryString ? `?${queryString}` : ''}`);
+  getAll: async (): Promise<Activity[]> => {
+    return request<Activity[]>('/activities');
   },
   
   // Get activity by ID
-  getById: (id: string): Promise<Activity> => {
+  getById: async (id: string): Promise<Activity> => {
     return request<Activity>(`/activities/${id}`);
   },
   
   // Create new activity
-  create: (activityData: Omit<Activity, 'id'>): Promise<Activity> => {
+  create: async (activityData: CreateActivityData): Promise<Activity> => {
     return request<Activity>('/activities', {
       method: 'POST',
       body: JSON.stringify(activityData),
@@ -89,7 +89,7 @@ export const ActivitiesAPI = {
   },
   
   // Update activity
-  update: (id: string, activityData: Partial<Activity>): Promise<Activity> => {
+  update: async (id: string, activityData: Partial<CreateActivityData>): Promise<Activity> => {
     return request<Activity>(`/activities/${id}`, {
       method: 'PUT',
       body: JSON.stringify(activityData),
@@ -97,28 +97,25 @@ export const ActivitiesAPI = {
   },
   
   // Delete activity
-  delete: (id: string): Promise<void> => {
+  delete: async (id: string): Promise<void> => {
     return request<void>(`/activities/${id}`, {
       method: 'DELETE',
     });
   },
   
-  // Search activities with filters
-  search: (searchQuery: string, filters: SearchParams = {}): Promise<Activity[]> => {
-    const params: SearchParams = { 
-      q: searchQuery,
-      ...filters
-    };
-    
-    const queryString = Object.keys(params)
-      .filter(key => params[key] !== undefined && params[key] !== '')
-      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key]!)}`)
-      .join('&');
-    
-    return request<Activity[]>(`/activities/search${queryString ? `?${queryString}` : ''}`);
-  }
+  // Join an activity
+  join: async (activityId: string): Promise<Activity> => {
+    return request<Activity>(`/activities/${activityId}/join`, {
+      method: 'POST',
+    });
+  },
+  
+  // Leave an activity
+  leave: async (activityId: string): Promise<Activity> => {
+    return request<Activity>(`/activities/${activityId}/leave`, {
+      method: 'POST',
+    });
+  },
 };
 
-export default {
-  ActivitiesAPI,
-};
+export default ActivityService;
